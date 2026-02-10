@@ -1,0 +1,74 @@
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  name      String?
+  createdAt DateTime @default(now())
+
+  featureRequests FeatureRequest[]
+  comments        Comment[]
+  votes           Vote[]
+}
+
+
+model FeatureRequest {
+  id          String   @id @default(cuid())
+  title       String
+  description String
+  createdAt DateTime @default(now()) 
+  updatedAt DateTime @updatedAt 
+  completedAt DateTime?
+
+  userId String
+  user   User @relation(fields: [userId], references: [id])
+
+  comments Comment[]
+  votes    Vote[]
+}
+
+
+model Comment {
+  id        String   @id @default(cuid())
+  content   String
+  createdAt DateTime @default(now())
+
+  userId           String
+  user             User @relation(fields: [userId], references: [id])
+
+  featureRequestId String
+  featureRequest   FeatureRequest @relation(fields: [featureRequestId], references: [id])
+}
+
+
+model Vote {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+
+  userId           String
+  user             User @relation(fields: [userId], references: [id])
+
+  featureRequestId String
+  featureRequest   FeatureRequest @relation(fields: [featureRequestId], references: [id])
+
+  @@unique([userId, featureRequestId])
+}
+
+
+
+
+enum Status {
+  PENDING
+  IN_PROGRESS
+  COMPLETED
+  REJECTED
+}
