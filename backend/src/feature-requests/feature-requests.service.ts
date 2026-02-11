@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { Status } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
 import { UpdateFeatureRequestDto } from './dto/update-feature-request.dto';
 
@@ -26,6 +27,26 @@ export class FeatureRequestsService {
     });
   }
 
+  findCompletedLastCalendarMonth() {
+    const now = new Date();
+    const startOfCurrentMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+    const startOfLastMonth = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+
+    return this.prisma.featureRequest.findMany({
+      where: {
+        completedAt: {
+          gte: startOfLastMonth,
+          lt: startOfCurrentMonth,
+        },
+      },
+      orderBy: { completedAt: 'desc' },
+      include: {
+        user: true,
+        _count: { select: { comments: true, votes: true } },
+      },
+    });
+  }
+
   findOne(id: string) {
     return this.prisma.featureRequest.findUnique({
       where: { id },
@@ -42,6 +63,16 @@ export class FeatureRequestsService {
     return this.prisma.featureRequest.update({
       where: { id },
       data,
+    });
+  }
+
+  updateStatus(id: string, status: Status) {
+    return this.prisma.featureRequest.update({
+      where: { id },
+      data: {
+        status,
+        completedAt: status === Status.COMPLETED ? new Date() : null,
+      },
     });
   }
 }
