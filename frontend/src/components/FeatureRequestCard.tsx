@@ -53,6 +53,7 @@ export function FeatureRequestCard({
   const relativeDate = useMemo(() => getRelativeDate(request.date), [request.date])
   const [isExpanded, setIsExpanded] = useState(defaultExpanded)
   const [upvotes, setUpvotes] = useState(request.upvotes)
+  const [showChat, setShowChat] = useState(false);
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -138,7 +139,10 @@ export function FeatureRequestCard({
             {request.description}
           </p>
           <div className="flex flex-row-reverse gap-4 mt-2 justify-end text-right">
-            <span className="flex items-center gap-1 text-xs text-gray-500">
+            <span
+              className="flex items-center gap-1 text-xs text-gray-500 cursor-pointer hover:text-indigo-500"
+              onClick={() => setShowChat(true)}
+            >
               <MessageSquare className="w-3 h-3 text-gray-400" />
               {request.comments} תגובות
             </span>
@@ -153,7 +157,47 @@ export function FeatureRequestCard({
           {getStatusLabel(request.status)}
         </Badge>
       </div>
-
+      {/* Chat Modal */}
+      {showChat && (
+        <div style={{ position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh', background: 'rgba(0,0,0,0.25)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <div style={{ background: '#fff', borderRadius: 12, width: 400, maxWidth: '90vw', boxShadow: '0 4px 32px rgba(0,0,0,0.12)', padding: 0, display: 'flex', flexDirection: 'column', minHeight: 420, maxHeight: '80vh', overflow: 'hidden' }}>
+            {/* Header */}
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'stretch', borderBottom: '1px solid #F3F4F6', background: '#F9FAFB' }}>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '16px 20px 4px 20px' }}>
+                <span style={{ fontWeight: 700, fontSize: 16, color: '#3730A3', fontFamily: 'Plus Jakarta Sans, Rubik, Heebo, system-ui, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif' }}>צ'אט תגובות</span>
+                <button onClick={() => setShowChat(false)} style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}>
+                  <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M6 6L14 14M14 6L6 14" stroke="#A3A3A3" strokeWidth="1.67" strokeLinecap="round"/></svg>
+                </button>
+              </div>
+              <div style={{ padding: '0 20px 12px 20px', fontWeight: 600, fontSize: 14, color: '#6366F1', fontFamily: 'Plus Jakarta Sans, Rubik, Heebo, system-ui, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif', textAlign: 'right', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                {request.title}
+              </div>
+            </div>
+            {/* Chat Messages */}
+            <div style={{ flex: 1, overflowY: 'auto', padding: '16px 20px', background: '#F6F6FB' }}>
+              {/* Example message */}
+              <div style={{ marginBottom: 16, display: 'flex', flexDirection: 'column', alignItems: 'flex-end' }}>
+                <div style={{ background: '#E0E7FF', color: '#3730A3', borderRadius: 8, padding: '8px 12px', fontSize: 14, fontFamily: 'Plus Jakarta Sans, Rubik, Heebo, system-ui, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif', maxWidth: 260, wordBreak: 'break-word' }}>
+                  דוגמה להודעה בצ'אט
+                </div>
+                <span style={{ fontSize: 10, color: '#A3A3A3', marginTop: 2, alignSelf: 'flex-end' }}>16.2.2026 14:32</span>
+              </div>
+              {/* ... כאן יופיעו הודעות נוספות ... */}
+            </div>
+            {/* Input */}
+            <form style={{ display: 'flex', alignItems: 'center', borderTop: '1px solid #F3F4F6', background: '#fff', padding: '12px 16px', gap: 8 }}>
+              <input
+                type="text"
+                placeholder="כתוב תגובה..."
+                style={{ flex: 1, border: '1px solid #E5E7EB', borderRadius: 8, padding: '8px 12px', fontSize: 14, fontFamily: 'Plus Jakarta Sans, Rubik, Heebo, system-ui, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif', outline: 'none', background: '#F9FAFB' }}
+              />
+              <button type="submit" style={{ background: 'linear-gradient(107.63deg, #6366F1 0%, #8B5CF6 100%)', border: 'none', borderRadius: 8, color: '#fff', fontWeight: 600, fontSize: 14, padding: '8px 16px', cursor: 'pointer' }}>
+                שלח
+              </button>
+            </form>
+          </div>
+        </div>
+      )}
       {/* Expanded Section */}
       {isExpanded && (
         <div className="px-0 pt-0 pb-6 border-t-0 bg-transparent space-y-6 animate-in">
@@ -277,7 +321,11 @@ export function FeatureRequestCard({
                 </div>
 
                 {/* Texts צמודים לשמאל */}
-                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: 0 }}>
+                <div
+                  style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: 0, cursor: 'pointer' }}
+                  onClick={() => setShowChat(true)}
+                  title="הצג צ'אט"
+                >
                   <p className="text-xs uppercase tracking-wider text-gray-500 mb-0" style={{ marginTop: '0px', marginBottom: '0px', lineHeight: '16px' }}>
                     תגובות
                   </p>
