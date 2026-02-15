@@ -4,9 +4,12 @@ import { Header } from '@/components/Header';
 import { StatsCards } from '@/components/StatsCards';
 import { FeatureRequestCard } from '@/components/FeatureRequestCard';
 import { useFeatureRequests, useCompletedLastMonth } from '@/hooks/useFeatureRequests';
+import { Modal } from '@/components/Modal';
+import { NewFeatureRequestForm } from '@/components/NewFeatureRequestForm';
 
 export function FeatureRequestsPage() {
   const [searchQuery, setSearchQuery] = useState('');
+  const [modalOpen, setModalOpen] = useState(false);
   const { data: requests, isLoading, error } = useFeatureRequests();
   const { data: completedLastMonth } = useCompletedLastMonth();
 
@@ -72,6 +75,7 @@ export function FeatureRequestsPage() {
           <button
             className="flex items-center justify-center gap-[6px] w-[129px] h-[34px] px-4 py-[7px] text-white rounded-lg"
             style={{ background: 'linear-gradient(105.97deg,#6366F1 0%,#8B5CF6 100%)', boxShadow: '0px 1px 3px rgba(99,102,241,0.3)' }}
+            onClick={() => setModalOpen(true)}
           >
             <span className="text-[13px] font-semibold leading-5">בקשה חדשה</span>
             <Plus className="w-4 h-4" strokeWidth={1.33} />
@@ -174,6 +178,9 @@ export function FeatureRequestsPage() {
           )}
         </div>
       </main>
+      <Modal open={modalOpen} onClose={() => setModalOpen(false)}>
+        <NewFeatureRequestForm onClose={() => setModalOpen(false)} />
+      </Modal>
     </div>
   );
 }
