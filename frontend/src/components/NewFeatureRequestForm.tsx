@@ -1,12 +1,25 @@
 
 import { useState } from 'react';
+import { api } from '../lib/api';
 
 export function NewFeatureRequestForm({ onClose }: { onClose: () => void }) {
+  // TODO: Replace with real user id from auth context
+  const userId = 'demo-user-id';
   const [title, setTitle] = useState("");
   const [desc, setDesc] = useState("");
   const [details, setDetails] = useState("");
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!title.trim() || !desc.trim()) return;
+    try {
+      await api.featureRequests.create({ title, description: desc, userId });
+      onClose();
+    } catch (err) {
+      alert('שגיאה בשליחת הבקשה');
+    }
+  };
   return (
-    <form style={{ padding: 0, width: 560, maxWidth: 560, height: 628.28, position: 'relative', background: '#fff', borderRadius: 10, boxSizing: 'border-box', display: 'flex', flexDirection: 'column', justifyContent: 'flex-start', fontFamily: 'Plus Jakarta Sans, Rubik, Heebo, system-ui, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif' }}>
+    <form onSubmit={handleSubmit} style={{ padding: 0, width: 560, maxWidth: 560, height: 628.28, position: 'relative', background: '#fff', borderRadius: 10, boxSizing: 'border-box', display: 'flex', flexDirection: 'column', justifyContent: 'flex-start', fontFamily: 'Plus Jakarta Sans, Rubik, Heebo, system-ui, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif' }}>
       {/* Header */}
       <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start', padding: '20px 24px', borderBottom: 'none' }}>
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: 3, width: 242 }}>
