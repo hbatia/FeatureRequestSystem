@@ -12,11 +12,11 @@ interface StatCardProps {
 }
 
 function StatCard({ title, value, icon, trend, highlighted }: StatCardProps) {
-  // Only highlight the "סה"כ בקשות" card
+  // Only highlight the "סה\"כ בקשות" card
   const isTotalRequests = title === 'סה"כ בקשות';
   return (
     <div
-      className={`stat-card ${isTotalRequests ? 'border-2 border-indigo-500 rounded-xl bg-white' : 'rounded-xl bg-white'}`}
+      className={`stat-card rounded-xl bg-white hover:bg-[#F4F3FF] transition-colors duration-200 ${isTotalRequests ? 'border-2 border-[#6366F1]' : ''}`}
       style={{
         direction: 'rtl',
         display: 'flex',
@@ -24,7 +24,12 @@ function StatCard({ title, value, icon, trend, highlighted }: StatCardProps) {
         alignItems: 'flex-start',
         justifyContent: 'center',
         padding: '17px 20px 41px 20px',
-        gap: '6px'
+        gap: '6px',
+        cursor: 'pointer',
+        boxShadow: 'none',
+        borderWidth: isTotalRequests ? 2 : undefined,
+        borderColor: isTotalRequests ? '#6366F1' : undefined,
+        borderStyle: isTotalRequests ? 'solid' : undefined,
       }}
     >
       {/* Label Row */}
@@ -47,7 +52,7 @@ function StatCard({ title, value, icon, trend, highlighted }: StatCardProps) {
 
       {/* Trend */}
       {trend && trend.value > 0 && (
-        <div className="flex items-center gap-1 justify-start w-full" style={{ marginTop: '0px' }}>
+        <div className="flex items-center gap-1 justify-start w-full" style={{ marginBottom: '-27px' }}>
           <span className="text-[14px] font-semibold text-[#047857] text-right">
             +{trend.value}% {trend.label}
           </span>
@@ -77,7 +82,7 @@ export function StatsCards({ totalRequests, pendingRequests, completedThisMonth,
         value={totalRequests}
         icon={<Users className="w-[15px] h-[15px]" strokeWidth={2} />}
         trend={{ value: trend, label: 'מהחודש שעבר' }}
-        highlighted
+        // highlighted
       />
       <StatCard
         title="ממתינות לטיפול"

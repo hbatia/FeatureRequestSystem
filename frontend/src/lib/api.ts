@@ -16,7 +16,7 @@ export const api = {
       return res.json();
     },
 
-    create: async (data: { title: string; description: string; authorId: string }): Promise<FeatureRequest> => {
+    create: async (data: { title: string; description: string; userId: string }): Promise<FeatureRequest> => {
       const res = await fetch(`${API_BASE}/feature-requests`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
